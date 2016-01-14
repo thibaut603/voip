@@ -42,7 +42,7 @@ make install
 cd /usr/local/src/certified-asterisk-13.1-cert2
 ./configure
 menuselect/menuselect --enable CORE-SOUNDS-FR-GSM --enable CORE-SOUNDS-FR-ULAW --enable EXTRA-SOUNDS-FR-GSM --enable EXTRA-SOUNDS-FR-ULAW menuselect.makeopts
-menuselect/menuselect --enable aelparse --enable app_meetme --enable MOH-SOUNDS-ULAW --enable chan_sip menuselect.makeopts
+menuselect/menuselect --enable pbx_ael --enable aelparse --enable app_meetme --enable MOH-SOUNDS-ULAW --enable chan_sip menuselect.makeopts
 make install
 make samples
 make config
