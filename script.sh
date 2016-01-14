@@ -38,6 +38,7 @@ cd /usr/local/src/certified-asterisk-13.1-cert2/contrib/scripts
 cd /usr/local/src/dahdi-linux-complete-2.10.2-rc1+2.10.2-rc1
 make
 make install
+make config
 
 cd /usr/local/src/certified-asterisk-13.1-cert2
 ./configure
