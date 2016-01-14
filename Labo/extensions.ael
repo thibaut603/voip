@@ -1,0 +1,83 @@
+
+//Contexte principale (inclus dans d'autres)
+context general {
+	//N°Composé => Action
+	1 => {Dial(SIP/5002);};
+	2 => {Dial(SIP/5003);};
+	102 => {
+		answer();
+		//Attendre l'utilisateur
+		WaitExten();
+	}
+	101 => {
+		answer();
+		SetMusicOnHold(default);
+		WaitExten();
+		//Racrocher
+		hangup();
+	};
+	100 => {
+		Answer();
+		//Attendre en sec
+		Wait(5);
+		Playback(hello-word);
+		Hangup();
+	};
+	//Appel groupé
+	4000 => {
+		Dial(SIP/5001&SIP/5002&SIP/5003);
+	};
+
+	//Sur messagerie après 50 sec(voicemail.conf)
+	_5XXX => {
+		Dial(SIP/${EXTEN},50);
+		VoiceMail(${EXTEN}@work);
+	};
+
+	//Joindre la voicemail
+	600 => {
+		VoiceMailMain(${CALLERID(num)}@work);};
+	1234 => {
+		Dial(100,2);
+		Answer();
+		Playback(hello-word);
+		Hangup();
+	}
+
+	//Conference
+	666 => {MeetMe(1);};
+
+	//On garde l'extention -2 caract
+	_**5XXX => {Pickup(${EXTEN:2});};
+}
+
+//Tout ce qui viens de l'intérieur
+context from-internal {
+	includes {
+		 general;
+	};
+
+	//Tout ce qui commence par 0 envoyer vers l'exté sans 0 (préfixe).
+	_0X. => {
+		Dial(IAX2/asteriskout/${EXTEN:1});
+	};
+}
+
+//Ce qui vient de l'exté
+context from_external {
+	includes {
+		general;
+	};
+}
+
+//BLF
+context BLF {
+	hint(SIP/5001) 5001 => {
+		Dial(SIP/${EXTEN},10);
+		VoiceMail(${EXTEN}@work);
+	}
+	hint(SIP/5002) 5002 => {
+		Dial(SIP/${EXTEN},10);
+		VoiceMail(${EXTEN}@work);};
+	hint(SIP/5003) 5003 => {}
+}
