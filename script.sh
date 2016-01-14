@@ -27,15 +27,15 @@ wget http://downloads.asterisk.org/pub/telephony/certified-asterisk/certified-as
 
 apt-get install libpri1.4 -y
 
-wget http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
+wget http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-2.10.2-rc1+2.10.2-rc1.tar.gz
 
-tar -zxf dahdi-linux-complete-current.tar.gz
+tar -zxf dahdi-linux-complete-2.10.2-rc1+2.10.2-rc1.tar.gz
 tar -zxf certified-asterisk-13.1-current.tar.gz
 
 cd /usr/local/src/certified-asterisk-13.1-cert2/contrib/scripts
 ./install_prereq install
 
-cd /usr/local/src/dahdi-linux-complete-2.11.0+2.11.0
+cd /usr/local/src/dahdi-linux-complete-2.10.2-rc1+2.10.2-rc1
 make
 make install
 
