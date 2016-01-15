@@ -38,6 +38,7 @@ cd /usr/local/src/certified-asterisk-13.1-cert2/contrib/scripts
 cd /usr/local/src/dahdi-linux-complete-2.10.2-rc1+2.10.2-rc1
 make
 make install
+sleep 5
 make config
 
 cd /usr/local/src/certified-asterisk-13.1-cert2
@@ -45,5 +46,6 @@ cd /usr/local/src/certified-asterisk-13.1-cert2
 make menuselect.makeopts
 menuselect/menuselect --enable CORE-SOUNDS-FR-GSM --enable CORE-SOUNDS-FR-ULAW --enable EXTRA-SOUNDS-FR-GSM --enable EXTRA-SOUNDS-FR-ULA --enable pbx_ael --enable aelparse --enable app_meetme --enable MOH-OPSOUND-ULAW --enable chan_sip menuselect.makeopts
 make install
+sleep 5
 make samples
 make config
