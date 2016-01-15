@@ -1,4 +1,20 @@
 context general {
 	101 => {Dial(SIP/101);};
 	102 => {Dial(SIP/102);};
-}; 
+	};
+
+context from-internal {
+        includes {
+        	general;
+        	};
+        _0X. => {
+                Dial(IAX2/voip2/${EXTEN:1});
+        	};
+	};
+
+context from_external {
+        includes {
+                general;
+       		 };
+	};
+
