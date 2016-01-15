@@ -1,0 +1,99 @@
+NB : Ce fichier n’a de sens que si vous avez lu le questionnaire et si vous avez configuré votre topologie.
+On configure tout d’abord le dhcp sur le routeur :
+
+(config)#ip dhcp pool cme (on choisit le nom que l’on veut)
+(dhcp-config)#network leNetworkConcerné masqueDeSousRéseau
+(dhcp-config)# range deTelleAdresse àTelleAdresse
+(dhcp-config)# default-router adresseDuRouteur
+(dhcp-config)# option 150 ip adresseDuTFTP (dhcp-config)# exit
+
+On configure la clock (c’est nécessaire !!!!) :
+#clock timezone CET +1
+
+// Pour info : #clock set HH :MM :SS day(1,2,3...) MONTH (Jan, Feb ,...) YEAR(2013 ,...)
+#clock set 10 :15 :02 3 Jan 2013
+On configure la telephony service:
+
+(config)#telephony-service
+(config-telephony)#max-dn 5 (101,102,103,200,203)
+(config-telephony)#max-ephones 3
+(il n’y a que 3 téléphones qui communiqueront)
+(config-telephony)#ip source-address adresseRouteur port 2000
+
+//Il faut le faire !!!
+on va auto assigner les dn 1 à 3 en dhcp, premier arrivé, premier servi) :
+
+(config-telephony)#auto assign 1 to 3
+(config-telephony)#system message AuChoix
+(config-telephony)#create cnf-files
+
+On configure les ephones-dn : Ephone-dn 1
+(config)#ephone-dn 1
+(config-ephone-dn)#number 101
+(config-ephone-dn)#name ID101
+(config-ephone-dn)#description telephone1
+(config-ephone-dn)#exit
+Ephone-dn 2
+(config)#ephone-dn 2
+(config-ephone-dn)#number 102
+(config-ephone-dn)#name ID102
+(config-ephone-dn)#description telephone2
+(config-ephone-dn)#exit
+Ephone-dn 3
+(config)#ephone-dn 3
+(config-ephone-dn)#number 103
+(config-ephone-dn)#name ID103
+(config-ephone-dn)#description telephone3
+(config-ephone-dn)#exit
+
+Ephone-dn 4
+(config)#ephone-dn 4
+(config-ephone-dn)#number 200
+(config-ephone-dn)#exit
+Ephone-dn 5
+(config)#ephone-dn 5
+(config-ephone-dn)#number 203
+(config-ephone-dn)#exit
+On retourne dans telephony-service et on crée les cnf-files (on pourrait aussi le faire tout à la fin) Quand tout cela est fait, on connecte les téléphones (softwares)
+1. On ouvre le cisco ip communicator
+2. On suit les instructions (si c’est la première fois qu’il est ouvert)
+3. On configure le tftp server (on met l’ip du routeur) ( si l’option 150 n’est pas spécifiée )
+4. On exit et on revient
+
+Comme on a mis en auto assign c’est pratique car il va recevoir un numéro automatiquement :
+Si c’est le premier téléphone ce sera l’ephone 1 et aura comme numéro la première extension à
+savoir 101.
+Si on fait un show runn on verra une mac associée à l’ephone 1, donc on a pas eu besoin d’entrer
+une mac nous même, car on a mis « auto assign », c’est donc bien plus pratique.
+On peut aussi voir que le bouton 1 est associé au ephone-dn 1 (button 1 :1)
+On va faire en sorte que cet ephone 1 soit joignable par l’intermédiaire du numéro 200 (ephonedn 4)
+
+(config)#ephone 1
+(config-ephone)#no button 1 :1
+(config-ephone)#button 1:1 2:4
+
+//le bouton 1 correspond à l’extension 1 et le bouton 2 correspond à l’extension 4
+On branche un deuxième téléphone et on le configure de la même façon (Vous devez le voir s’enregistrer en tant que ephone 2 bien entendu)
+On lui rajoute aussi l’ephone-dn 4
+
+(config)#ephone 2
+(config-ephone)#no button 1 :2
+(config-ephone)#button 1:2 2:4
+
+//le bouton 1 correspond à l’extension 2 et le bouton 2 correspond à l’extension 4
+Finalement on rajoute le 3ème téléphone, et cette fois-ci, on lui rajoute l’extension 5 (numero 203) en silencieux.
+(config)#ephone 3
+(config-ephone)#no button 1 :3
+(config-ephone)#button 1:3 2s5
+
+//le bouton 1 correspond à l’extension 3 et le bouton 2 correspond à
+l’extension 5
+À Partir de maintenant, vous 3 téléphones devraient pouvoir communiquer normalement et
+même faire des conférences par défaut.
+Si vous voulez que l’un des 3 téléphones soit un hardphone :
+1. Regarder ce que contient la flash de votre router
+2. S’il y a des fichiers commencent par « sccp... » Vous pouvez utiliser un hardphone, sinon il
+faut les télécharger et les décompresser dans la flah
+3. Quand c’est fait, vous mettez ces fichiers dans le tftp server du router #tftp-server leNomDufichier
+Vous faites cela pour tous les fichiers.
+Et Normalement lorsque le hardphone s’allume, il prendra les fichiers et s’enregistrera.
