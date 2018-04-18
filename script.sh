@@ -71,6 +71,8 @@ sleep 5
 make samples
 make config
 
-sleep5
+sleep 5
 
+/etc/init.d/asterisk start
+sleep 1
 /etc/init.d/asterisk status
